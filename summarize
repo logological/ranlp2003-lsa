@@ -1,6 +1,6 @@
 #!/u/psy/bin/ksh
 #
-# $Id: summarize,v 0.13 2002-09-05 23:45:32 psy Exp $
+# $Id: summarize,v 0.14 2002-09-06 00:19:46 psy Exp $
 # ------------------------------------------------------------------------------
 #
 # Summarizes a document (the whole shebang)
@@ -94,8 +94,8 @@ do
     --\?)      echo "$USAGE"; exit 0    ;;
     -help)     echo "$USAGE"; exit 0    ;;
     --help)    echo "$USAGE"; exit 0    ;;
-    -version)  echo '$Id: summarize,v 0.13 2002-09-05 23:45:32 psy Exp $'; exit 0    ;;
-    --version) echo '$Id: summarize,v 0.13 2002-09-05 23:45:32 psy Exp $'; exit 0    ;;
+    -version)  echo '$Id: summarize,v 0.14 2002-09-06 00:19:46 psy Exp $'; exit 0    ;;
+    --version) echo '$Id: summarize,v 0.14 2002-09-06 00:19:46 psy Exp $'; exit 0    ;;
     -*)        echo "$ME: invalid argument \"$1\""; exit 1 ;;
     *)         if [ -n "$CORPUS" ]
 	       then
@@ -146,7 +146,7 @@ fi
 
 # Write log file so we remember which options we used
 echo "------------------------------------------------------------------------
-Running "'$Id: summarize,v 0.13 2002-09-05 23:45:32 psy Exp $'"
+Running "'$Id: summarize,v 0.14 2002-09-06 00:19:46 psy Exp $'"
 Command line options: $ORIGOPTS
 Start time: `date`" \
     | tee -a $CORPUS.log
@@ -231,16 +231,17 @@ then
     getallreps < $CORPUS.topics | uniq > $CORPUS.reps
 fi
 
+# Determine the length of the summary
+if [ -z $SUMLEN ]
+then
+    SUMLEN=$(( NUMLINES * SUMPERCENT / 100 ))
+    echo "Maximum summary length: $NUMLINES * $SUMPERCENT% = $SUMLEN" \
+	| tee -a $CORPUS.log
+fi
+
 # Get all the glue and make the summary
 if [ ! -e $CORPUS.sumindex ]
 then
-    # Determine the number of factors
-    if [ -z $SUMLEN ]
-    then
-	SUMLEN=$(( NUMLINES * SUMPERCENT / 100 ))
-	echo "Maximum summary length: $NUMLINES * $SUMPERCENT% = $SUMLEN" \
-	    | tee -a $CORPUS.log
-    fi
     echo "Making glue..."
     getallglue $ALPHA $BETA $GAMMA $SUMLEN $CORPUS < $CORPUS.reps
     echo "Actual summary length: `wc -l < $CORPUS.sumindex`" \
@@ -272,8 +273,17 @@ then
     txt2parcorpus \
 	< $CORPUS.txt \
 	| initialsentences \
+	> $CORPUS.summary.initial.tmp$$
+    head -$SUMLEN $CORPUS.summary.initial.tmp$$ \
 	| $FMT \
 	> $CORPUS.summary.initial
+    if [ `wc -l < $CORPUS.summary.initial.tmp$$` -lt $SUMLEN ]
+    then
+	echo "Warning: initial-sentences baseline not long enough; stored temp file as $CORPUS.summary.initial.tmp$$" \
+	    | tee -a $CORPUS.log
+    else
+	rm $CORPUS.summary.initial.tmp$$
+    fi
 fi
 
 # Finished

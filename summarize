@@ -1,6 +1,6 @@
 #!/u/psy/bin/ksh
 #
-# summarize.ksh $Revision: 0.3 $ $Date: 2002-08-26 12:34:53 $
+# summarize.ksh $Revision: 0.4 $ $Date: 2002-08-27 14:16:52 $
 # -------------
 #
 # Summarizes a document (the whole shebang)
@@ -31,6 +31,7 @@ Default values are given in square brackets.
 
 General options:
     -clean     remove all existing summary and intermediate files [off]
+    -version   print version information
 
 Text processing options:
     -m n       minimum word length [$MINLEN]
@@ -90,6 +91,8 @@ do
     --\?)      echo "$USAGE"; exit 0    ;;
     -help)     echo "$USAGE"; exit 0    ;;
     --help)    echo "$USAGE"; exit 0    ;;
+    -version)  echo '$Id: summarize,v 0.4 2002-08-27 14:16:52 psy Exp $'; exit 0    ;;
+    --version) echo '$Id: summarize,v 0.4 2002-08-27 14:16:52 psy Exp $'; exit 0    ;;
     -*)        echo "$ME: invalid argument \"$1\""; exit 1 ;;
     *)         if [ -n "$CORPUS" ]
 	       then
@@ -122,8 +125,9 @@ then
 fi
 
 # Write log file so we remember which options we used
-echo "------------------------------------------------------------------------
-Running $ME --- `date`
+echo "------------------------------------------------------------------------"
+echo 'Running $Id: summarize,v 0.4 2002-08-27 14:16:52 psy Exp $'
+echo "Start time: `date`
 Options:
 -m $MINLEN
 -t $MAXLEN
@@ -230,5 +234,5 @@ then
 fi
 
 # Finished
-echo "Finished $ME --- `date`" \
+echo "End time: `date`" \
     >> $CORPUS.log

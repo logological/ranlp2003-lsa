@@ -1,4 +1,4 @@
-$Revision: 0.3 $ $Date: 2002-08-27 14:20:43 $
+$Revision: 0.4 $ $Date: 2002-08-27 14:22:37 $
 
 getallglue.ksh can be made vastly more efficient with the following
 reimplementation: 
@@ -35,7 +35,10 @@ Should probably remove termless documents or coherence assessment won't work
 
 Using CVS with xemacs:
 
-To turn on: M-x load-library RET pcl-cvs RET
+There are two packages, vc and pcl-cvs.  vc is fine for committing one 
+file at a time.
+
+To turn on pcl-cvs: M-x load-library RET pcl-cvs RET
 	M-x pcl-cvs RET
-To commit:  ^X ^Q, then type message, then ^C ^C
+To commit with either:  ^X ^Q, then type message, then ^C ^C
 

@@ -1,6 +1,6 @@
 #!/u/psy/bin/ksh
 #
-# summarize.ksh $Revision: 0.2 $ $Date: 2002-08-26 12:03:12 $
+# summarize.ksh $Revision: 0.3 $ $Date: 2002-08-26 12:34:53 $
 # -------------
 #
 # Summarizes a document (the whole shebang)
@@ -229,4 +229,6 @@ then
 	> $CORPUS.summary.baseline
 fi
 
-
+# Finished
+echo "Finished $ME --- `date`" \
+    >> $CORPUS.log

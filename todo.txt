@@ -1,4 +1,4 @@
-$Id: todo.txt,v 0.9 2002-09-02 12:44:34 psy Exp $
+$Id: todo.txt,v 0.10 2002-09-05 14:55:53 psy Exp $
 -------------------------------------------------------------------------------
 
 To do for Tuesday, 3 September:
@@ -148,6 +148,15 @@ healthcare:	15-20% is best for length 5%
 austria:        15% is best for length 5%
 		20% is best for length 15%
 		
+
+TRIAL:
+etiquette	23 DUs; expected %f = 30; don't use 5% len (too short)
+kazakhstan	54 DUs; expected %f = 25; don't use 5% len (too short)
+goldenbird	77 DUs; expected %f = 20; don't use 5% len (too short)
+daycare		80 DUs; expected %f = 20; don't use 30% len (too long)
+pres92		86 DUs; expected %f = 20; don't use 30% len (too long)
+civilwar	91 DUs; expected %f = 20; don't use 30% len (too long)
+
 
 ------------
 getallglue.ksh can be made vastly more efficient with the following

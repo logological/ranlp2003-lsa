@@ -1,6 +1,6 @@
 #!/u/psy/bin/ksh
 #
-# $Id: reparagraph,v 0.2 2002-08-27 17:39:39 psy Exp $
+# $Id: reparagraph,v 0.3 2002-08-30 16:22:16 psy Exp $
 # -----------------------------------------------------------------------------
 #
 # Formats a document into paragraphs
@@ -33,8 +33,8 @@ do
     --\?)      echo "$USAGE"; exit 0    ;;
     -help)     echo "$USAGE"; exit 0    ;;
     --help)    echo "$USAGE"; exit 0    ;;
-    -version)  echo '$Id: reparagraph,v 0.2 2002-08-27 17:39:39 psy Exp $'; exit 0    ;;
-    --version) echo '$Id: reparagraph,v 0.2 2002-08-27 17:39:39 psy Exp $'; exit 0    ;;
+    -version)  echo '$Id: reparagraph,v 0.3 2002-08-30 16:22:16 psy Exp $'; exit 0    ;;
+    --version) echo '$Id: reparagraph,v 0.3 2002-08-30 16:22:16 psy Exp $'; exit 0    ;;
     -*)        echo "$ME: invalid argument \"$1\""; exit 1 ;;
     *)         if [ -n "$CORPUS" ]
 	       then
@@ -70,7 +70,7 @@ fi
 
 # Use C99 to segment the document
 cd $C99DIR
-printsummary.ksh -f $CWD/$CORPUS \
+printsummary -f $CWD/$CORPUS \
     < $CWD/$INDEX \
     | ./C99 \
     | sed -e 's/^==========$//;' \

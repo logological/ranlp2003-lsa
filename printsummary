@@ -1,15 +1,70 @@
 #!/u/psy/bin/ksh
 #
-# printsummary.ksh $Revision: 0.2 $ $Date: 2002-08-26 12:03:11 $
-# ----------------
+# $Id: printsummary,v 0.3 2002-08-27 17:03:28 psy Exp $
+# -----------------------------------------------------------------------------
 #
 # Usage:
-#  printsummary.ksh corpus < summary.final
+#  printsummary.ksh corpus < corpus.sumindex
 #
 # Prints summary given a list of DUs
 
-CORPUS=$1
 FMT=/u/psy/bin/fmt
+
+# Usage instructions
+ME=`basename $0`
+USAGE="Usage: $ME [options] corpus
+
+    -version   print version information
+    -s         suppress single-spacing
+    -f         suppress formatting
+"
+
+#
+#       Process the command line
+#
+if [ $# -lt 1 ]
+then
+        echo "$USAGE"
+        exit 1
+fi
+
+while [ $# -gt 0 ]
+do
+    case $1 in
+    -f)        NOFORMAT=1               ;;
+    -s)        NOSPACING=1;             ;;
+    -\?)       echo "$USAGE"; exit 0    ;;
+    --\?)      echo "$USAGE"; exit 0    ;;
+    -help)     echo "$USAGE"; exit 0    ;;
+    --help)    echo "$USAGE"; exit 0    ;;
+    -version)  echo '$Id: printsummary,v 0.3 2002-08-27 17:03:28 psy Exp $'; exit 0    ;;
+    --version) echo '$Id: printsummary,v 0.3 2002-08-27 17:03:28 psy Exp $'; exit 0    ;;
+    -*)        echo "$ME: invalid argument \"$1\""; exit 1 ;;
+    *)         if [ -n "$CORPUS" ]
+	       then
+		    echo "$USAGE"
+		    exit 1
+	       fi
+	       CORPUS=$1 ;;
+    esac
+    shift
+done
+
+# Make sure corpus is specified
+if [ -z "$CORPUS" ]
+then
+    echo "$ME: no corpus file specified"
+    exit 1
+fi
+
+# Make sure file is there
+if [ ! -e $CORPUS ]
+then
+    echo "$ME: $CORPUS not found"
+    exit 1
+fi
+
+
 read DU
 
 while [ $? -eq 0 ]
@@ -18,17 +73,19 @@ do
     read DU
 done
 
-singlespace.sh ps1.$$ | $FMT
-#singlespace.sh ps1.$$ | fmt > $CORPUS.summary
-#cat $CORPUS.summary
+CMDLINE="cat ps1.$$"
 
-#tr '\012' ' ' < ps1.$$ > ps2.$$
+if [ -z "$NOSPACING" ]
+then
+    CMDLINE="$CMDLINE | singlespace.sh"
+fi
 
-#echo ' ' >> ps2.$$
-#sed -e 's/   /  /g;' < ps2.$$ \
-#    | fmt \
-#    > $CORPUS.summary
+if [ -z "$NOFORMAT" ]
+then
+    CMDLINE="$CMDLINE | $FMT"
+fi
+
+eval $CMDLINE
+
 rm ps1.$$ 
-
-#cat $CORPUS.summary
 

@@ -1,0 +1,18 @@
+#!/bin/ksh
+#
+# $Id: sweetspot,v 0.0 2002-08-31 18:02:58 psy Exp $
+# ------------------------------------------------------------------------------
+#
+# Finds the "sweet spot" for our program
+
+CORPUS=$1
+
+for L in 5 15 30 50
+do
+    for F in 5 10 15 20 25 30 50
+    do
+	summarize -clean -f $F -l $L $CORPUS
+	mv $CORPUS.summary $CORPUS.summary.l$L.f$F
+	mv $CORPUS.sumindex $CORPUS.sumindex.l$L.f$F
+    done
+done

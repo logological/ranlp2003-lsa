@@ -1,12 +1,13 @@
 #!/u/psy/bin/ksh
 #
-# summarize.ksh $Revision: 0.5 $ $Date: 2002-08-27 15:45:18 $
+# summarize.ksh $Revision: 0.6 $ $Date: 2002-08-27 16:21:23 $
 # -------------
 #
 # Summarizes a document (the whole shebang)
 
 C99DIR=/ai/nlu/C99/bin
 CWD=`pwd`
+ORIGOPTS="$@"
 
 # Default options
 MINLEN=1
@@ -91,8 +92,8 @@ do
     --\?)      echo "$USAGE"; exit 0    ;;
     -help)     echo "$USAGE"; exit 0    ;;
     --help)    echo "$USAGE"; exit 0    ;;
-    -version)  echo '$Id: summarize,v 0.5 2002-08-27 15:45:18 psy Exp $'; exit 0    ;;
-    --version) echo '$Id: summarize,v 0.5 2002-08-27 15:45:18 psy Exp $'; exit 0    ;;
+    -version)  echo '$Id: summarize,v 0.6 2002-08-27 16:21:23 psy Exp $'; exit 0    ;;
+    --version) echo '$Id: summarize,v 0.6 2002-08-27 16:21:23 psy Exp $'; exit 0    ;;
     -*)        echo "$ME: invalid argument \"$1\""; exit 1 ;;
     *)         if [ -n "$CORPUS" ]
 	       then
@@ -104,10 +105,11 @@ do
     shift
 done
 
-# Clean up
-if [ -n "$CLEAN" ]
+# Make sure corpus is specified
+if [ -z "$CORPUS" ]
 then
-    rm -f $CORPUS $CORPUS.c99 $CORPUS.i $CORPUS.reps $CORPUS.topics $CORPUS.sumindex $CORPUS.single $CORPUS.summary $CORPUS.summary.random $CORPUS.tmp RUN_SUMMARY keys.dir keys.pag out pindex1.out pindex2.out $CORPUS.summary.baseline
+    echo "$ME: no corpus file specified"
+    exit 1
 fi
 
 # Make sure file is there
@@ -115,6 +117,12 @@ if [ ! -e $CORPUS.txt ]
 then
     echo "$ME: $CORPUS.txt not found"
     exit 1
+fi
+
+# Clean up
+if [ -n "$CLEAN" ]
+then
+    rm -f $CORPUS $CORPUS.c99 $CORPUS.i $CORPUS.reps $CORPUS.topics $CORPUS.sumindex $CORPUS.single $CORPUS.summary $CORPUS.summary.random $CORPUS.tmp RUN_SUMMARY keys.dir keys.pag out pindex1.out pindex2.out $CORPUS.summary.baseline
 fi
 
 # Make stoplist is there
@@ -125,26 +133,28 @@ then
 fi
 
 # Write log file so we remember which options we used
-echo "------------------------------------------------------------------------"
-echo 'Running $Id: summarize,v 0.5 2002-08-27 15:45:18 psy Exp $'
-echo "Start time: `date`
-Options:
--m $MINLEN
--t $MAXLEN
--T $MAXLINE
--e $ESTRING
--s $STOPLIST
--nc $NUMSTOP
--lw $LOCAL
--gw $GLOBAL
--f $FACTPERCENT
--F $NUMFACTORS
--a $ALPHA
--b $BETA
--g $GAMMA
--l $SUMPERCENT
--L $SUMLEN
-" >> $CORPUS.log
+echo "------------------------------------------------------------------------
+Running "'$Id: summarize,v 0.6 2002-08-27 16:21:23 psy Exp $'"
+Command line options: $ORIGOPTS
+Start time: `date`" \
+    | tee -a $CORPUS.log
+
+#Options:
+#-m $MINLEN
+#-t $MAXLEN
+#-T $MAXLINE
+#-e $ESTRING
+#-s $STOPLIST
+#-nc $NUMSTOP
+#-lw $LOCAL
+#-gw $GLOBAL
+#-f $FACTPERCENT
+#-F $NUMFACTORS
+#-a $ALPHA
+#-b $BETA
+#-g $GAMMA
+#-l $SUMPERCENT
+#-L $SUMLEN
 
 # Segment corpus into sentences (one per line)
 if [ ! -e $CORPUS.single ]
@@ -163,7 +173,8 @@ then
 fi
 
 NUMLINES=`grep -c \$ $CORPUS.single`
-echo "Number of DUs: $NUMLINES" >> $CORPUS.log
+echo "Number of DUs: $NUMLINES" \
+    | tee -a $CORPUS.log
 
 # double-space the corpus
 if [ ! -e $CORPUS ]
@@ -188,8 +199,8 @@ then
     if [ -z $NUMFACTORS ]
     then
 	NUMFACTORS=$(( NUMLINES * FACTPERCENT / 100 ))
-	echo "Number of factors: $NUMLINES * $FACTPERCENT\% = $NUMFACTORS" \
-	    >> $CORPUS.log
+	echo "Number of factors: $NUMLINES * $FACTPERCENT% = $NUMFACTORS" \
+	    | tee -a $CORPUS.log
     fi
     NUMSTOP=`wc -l < $STOPLIST`
     buildmatrix.sh $STOPLIST $NUMSTOP $MINLEN $MAXLEN $MAXLINE $LOCAL $GLOBAL $NUMFACTORS $ESTRING $CORPUS
@@ -209,11 +220,13 @@ then
     if [ -z $SUMLEN ]
     then
 	SUMLEN=$(( NUMLINES * SUMPERCENT / 100 ))
-	echo "Summary length: $NUMLINES * $SUMPERCENT\% = $SUMLEN" \
-	    >> $CORPUS.log
+	echo "Maximum summary length: $NUMLINES * $SUMPERCENT% = $SUMLEN" \
+	    | tee -a $CORPUS.log
     fi
     echo "Making glue..."
     getallglue.ksh $ALPHA $BETA $GAMMA $SUMLEN $CORPUS < $CORPUS.reps
+    echo "Actual summary length: `wc -l < $CORPUS.sumindex`" \
+	    | tee -a $CORPUS.log
 fi
 
 # Print the summary
@@ -235,4 +248,4 @@ fi
 
 # Finished
 echo "End time: `date`" \
-    >> $CORPUS.log
+    | tee -a $CORPUS.log

@@ -1,0 +1,78 @@
+#!/u/psy/bin/ksh
+#
+# $Id: reparagraph,v 0.1 2002-08-27 17:23:25 psy Exp $
+# -----------------------------------------------------------------------------
+#
+# Formats a document into paragraphs
+
+C99DIR=/ai/nlu/C99/bin
+CWD=`pwd`
+FMT=/u/psy/bin/fmt
+
+# Usage instructions
+ME=`basename $0`
+USAGE="Usage: $ME [options] corpus corpus.sumindex
+
+    -version   print version information
+"
+
+
+#
+#       Process the command line
+#
+if [ $# -lt 1 ]
+then
+        echo "$USAGE"
+        exit 1
+fi
+
+while [ $# -gt 0 ]
+do
+    case $1 in
+    -\?)       echo "$USAGE"; exit 0    ;;
+    --\?)      echo "$USAGE"; exit 0    ;;
+    -help)     echo "$USAGE"; exit 0    ;;
+    --help)    echo "$USAGE"; exit 0    ;;
+    -version)  echo '$Id: reparagraph,v 0.1 2002-08-27 17:23:25 psy Exp $'; exit 0    ;;
+    --version) echo '$Id: reparagraph,v 0.1 2002-08-27 17:23:25 psy Exp $'; exit 0    ;;
+    -*)        echo "$ME: invalid argument \"$1\""; exit 1 ;;
+    *)         if [ -n "$CORPUS" ]
+	       then
+		    echo "$USAGE"
+		    exit 1
+	       fi
+	       CORPUS=$1
+	       shift
+	       if [ -z "$1" ]
+	       then
+		    echo "$USAGE"
+		    exit 1
+	       fi
+	       INDEX=$1
+	       ;;
+    esac
+    shift
+done
+
+# Make sure corpus is specified
+if [ -z "$CORPUS" ]
+then
+    echo "$ME: no corpus file specified"
+    exit 1
+fi
+
+# Make sure file is there
+if [ ! -e $CORPUS ]
+then
+    echo "$ME: $CORPUS not found"
+    exit 1
+fi
+
+# Use C99 to segment the document
+cd $C99DIR
+printsummary.ksh -f $CWD/$CORPUS \
+    < $CWD/$INDEX \
+    | ./C99 | $CWD/$CORPUS.sumc99 \
+    | sed -e 's/^==========$//;' \
+    | $FMT
+cd $CWD

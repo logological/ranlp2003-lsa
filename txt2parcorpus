@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: txt2parcorpus,v 0.2 2002-08-27 19:08:46 psy Exp $
+# $Id: txt2parcorpus,v 0.3 2002-08-27 19:38:44 psy Exp $
 # -----------------------------------------------------------------------------
 #
 # Usage:
@@ -16,8 +16,8 @@ foreach $line (<>) {
   chop($line);
   if ($line !~ /^\s*$/) {
 
-    # Remove blank lines and spaces
-    $line =~ s/^\s+//;
+    # Assume indentation means this is a new paragraph
+    $line =~ s/^\s+/\n\n/;
 
     # Print line
     print STDOUT $line . " ";

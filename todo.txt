@@ -1,4 +1,4 @@
-$Id: todo.txt,v 0.5 2002-08-31 15:32:35 psy Exp $
+$Id: todo.txt,v 0.6 2002-08-31 16:28:13 psy Exp $
 -------------------------------------------------------------------------------
 
 To do for Tuesday, 3 September:
@@ -20,7 +20,7 @@ MUSICIANS: xxx sentences
 30
 50
 
-
+------------
 getallglue.ksh can be made vastly more efficient with the following
 reimplementation: 
 
@@ -50,8 +50,13 @@ function getallglue(x, y, z)
 		call getallglue(i, g, z+1)
 		call getallglue(g, j, z+1)
 
+-------
 Should probably remove termless documents or coherence assessment won't work
+------
 
+Use getopts for processing command-line arguments (it also generates
+man pages and usage messages!  yay!)
+---------
 
 
 Using CVS with xemacs:

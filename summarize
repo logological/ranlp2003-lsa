@@ -2,9 +2,7 @@
 
 # Summarizes a document (the whole shebang)
 
-BIN=/u/psy/ice
 C99DIR=/ai/nlu/C99/bin
-PATH=$BIN:$PATH
 CWD=`pwd`
 
 # Default options

@@ -1,11 +1,10 @@
-#!/bin/ksh
+#!/u/psy/bin/ksh
 #
 # Usage:
 #  printsummary.ksh corpus < summary.final
 #
 # Prints summary given a list of DUs
 
-PATH=$PATH:/u/psy/ice
 CORPUS=$1
 FMT=/u/psy/bin/fmt
 read DU

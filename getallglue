@@ -15,7 +15,6 @@
 # Purpose: creates or improves a summary
 
 ME=`basename $0`
-PATH=$PATH:/u/psy/ice
 #KSH=/u/psy/bin/ksh
 USAGE="Usage: $ME alpha beta gamma len corpus < corpus.summary"
 

@@ -13,7 +13,6 @@ GLUE=$(($STARTDU + 1))
 BESTGLUE=$GLUE
 BESTGLUESYN=-1.0
 ME=`basename $0`
-PATH=$PATH:/u/psy/ice
 USAGE="Usage: $ME startdu enddu alpha"
 
 #

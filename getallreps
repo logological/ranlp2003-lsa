@@ -8,8 +8,6 @@
 #
 # where corpus.rep is a newline-delimited list of topic boundaries
 
-PATH=$PATH:/u/psy/ice
-
 read FROM
 read TO
 echo 1

@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 #
-# txt2parcorpus.pl $Revision: 0.1 $ $Date: 2002-08-26 12:03:12 $
-# ----------------
+# $Id: txt2parcorpus,v 0.2 2002-08-27 19:08:46 psy Exp $
+# -----------------------------------------------------------------------------
 #
 # Usage:
 #    txt2parcorpus.pl
@@ -15,6 +15,11 @@ $prev = 0;
 foreach $line (<>) {
   chop($line);
   if ($line !~ /^\s*$/) {
+
+    # Remove blank lines and spaces
+    $line =~ s/^\s+//;
+
+    # Print line
     print STDOUT $line . " ";
     $prev = 1;
   }

@@ -1,6 +1,6 @@
 #!/u/psy/bin/ksh
 #
-# summarize.ksh $Revision: 0.4 $ $Date: 2002-08-27 14:16:52 $
+# summarize.ksh $Revision: 0.5 $ $Date: 2002-08-27 15:45:18 $
 # -------------
 #
 # Summarizes a document (the whole shebang)
@@ -91,8 +91,8 @@ do
     --\?)      echo "$USAGE"; exit 0    ;;
     -help)     echo "$USAGE"; exit 0    ;;
     --help)    echo "$USAGE"; exit 0    ;;
-    -version)  echo '$Id: summarize,v 0.4 2002-08-27 14:16:52 psy Exp $'; exit 0    ;;
-    --version) echo '$Id: summarize,v 0.4 2002-08-27 14:16:52 psy Exp $'; exit 0    ;;
+    -version)  echo '$Id: summarize,v 0.5 2002-08-27 15:45:18 psy Exp $'; exit 0    ;;
+    --version) echo '$Id: summarize,v 0.5 2002-08-27 15:45:18 psy Exp $'; exit 0    ;;
     -*)        echo "$ME: invalid argument \"$1\""; exit 1 ;;
     *)         if [ -n "$CORPUS" ]
 	       then
@@ -105,7 +105,7 @@ do
 done
 
 # Clean up
-if [ -n $CLEAN ]
+if [ -n "$CLEAN" ]
 then
     rm -f $CORPUS $CORPUS.c99 $CORPUS.i $CORPUS.reps $CORPUS.topics $CORPUS.sumindex $CORPUS.single $CORPUS.summary $CORPUS.summary.random $CORPUS.tmp RUN_SUMMARY keys.dir keys.pag out pindex1.out pindex2.out $CORPUS.summary.baseline
 fi
@@ -126,7 +126,7 @@ fi
 
 # Write log file so we remember which options we used
 echo "------------------------------------------------------------------------"
-echo 'Running $Id: summarize,v 0.4 2002-08-27 14:16:52 psy Exp $'
+echo 'Running $Id: summarize,v 0.5 2002-08-27 15:45:18 psy Exp $'
 echo "Start time: `date`
 Options:
 -m $MINLEN

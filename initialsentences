@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: initialsentences,v 0.4 2002-08-31 16:22:16 psy Exp $
+# $Id: initialsentences,v 0.5 2002-09-05 13:27:20 psy Exp $
 # -----------------------------------------------------------------------------
 #
 # Usage:
@@ -12,16 +12,18 @@
 foreach $line (<>) {
 
     # Fix abbreviations
+    $line =~ s/Mt\./Mt/g;
     $line =~ s/Mr\./Mr/g;
     $line =~ s/Mrs\./Mrs/g;
+    $line =~ s/Messrs\./Messrs/g;
     $line =~ s/Ms\./Ms/g;
     $line =~ s/Dr\./Dr/g;
     $line =~ s/St\./St/g;
     $line =~ s/Sen\./Sen/g;
+    $line =~ s/Sens\./Sens/g;
     $line =~ s/Prof\./Prof/g;
     $line =~ s/i\.?e\./ie/g;
     $line =~ s/e\.?g\./eg/g;
-    $line =~ s/U\.S\./US./g;
     
     # Put each sentence on its own line
 

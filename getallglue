@@ -1,6 +1,6 @@
 #!/u/psy/bin/ksh
 #
-# $Id: getallglue,v 0.4 2002-08-31 16:22:15 psy Exp $
+# $Id: getallglue,v 0.5 2002-08-31 22:04:27 psy Exp $
 # ------------------------------------------------------------------------------
 #
 # Gets all glue sentences
@@ -113,6 +113,7 @@ if [ $GLUEADDED -eq 0 ]
 then
     sort +1n $TMPFILE \
 	| cut -f2 -d' ' \
+	| head -$LEN \
 	> $CORPUS.sumindex
     rm $TMPFILE
 elif [ $(( $GLUEADDED + $DUCOUNT )) -ge $LEN ]

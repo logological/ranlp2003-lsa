@@ -1,5 +1,8 @@
 #!/u/psy/bin/ksh
-
+#
+# $Revision: 0.2 $
+# $Date: 2002-08-26 11:56:31 $
+#
 # buildmatrix.sh
 # --------------
 #
@@ -37,7 +40,7 @@ then
     GLOBAL=""
 fi
 
-echo "Building term-document matrix with..."
+echo "Building term-document matrix..."
 pindex \
     -n $NUMFACT \
     -l $MINLEN \

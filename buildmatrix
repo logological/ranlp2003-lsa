@@ -1,9 +1,6 @@
 #!/u/psy/bin/ksh
 #
-# $Revision: 0.2 $
-# $Date: 2002-08-26 11:56:31 $
-#
-# buildmatrix.sh
+# buildmatrix.sh $Revision: 0.3 $ $Date: 2002-08-26 11:57:26 $
 # --------------
 #
 # Usage:

@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: initialsentences,v 0.1 2002-08-27 19:27:43 psy Exp $
+# $Id: initialsentences,v 0.2 2002-08-27 19:40:29 psy Exp $
 # -----------------------------------------------------------------------------
 #
 # Usage:
@@ -21,6 +21,7 @@ foreach $line (<>) {
     $line =~ s/Prof\./Prof/g;
     $line =~ s/i\.?e\./ie/g;
     $line =~ s/e\.?g\./eg/g;
+    $line =~ s/U.S.\./US./g;
     
     # Put each sentence on its own line
 

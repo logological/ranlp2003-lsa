@@ -1,6 +1,6 @@
 #!/u/psy/bin/ksh
 #
-# $Id: summarize,v 0.7 2002-08-31 16:22:16 psy Exp $
+# $Id: summarize,v 0.8 2002-08-31 17:49:52 psy Exp $
 # ------------------------------------------------------------------------------
 #
 # Summarizes a document (the whole shebang)
@@ -92,8 +92,8 @@ do
     --\?)      echo "$USAGE"; exit 0    ;;
     -help)     echo "$USAGE"; exit 0    ;;
     --help)    echo "$USAGE"; exit 0    ;;
-    -version)  echo '$Id: summarize,v 0.7 2002-08-31 16:22:16 psy Exp $'; exit 0    ;;
-    --version) echo '$Id: summarize,v 0.7 2002-08-31 16:22:16 psy Exp $'; exit 0    ;;
+    -version)  echo '$Id: summarize,v 0.8 2002-08-31 17:49:52 psy Exp $'; exit 0    ;;
+    --version) echo '$Id: summarize,v 0.8 2002-08-31 17:49:52 psy Exp $'; exit 0    ;;
     -*)        echo "$ME: invalid argument \"$1\""; exit 1 ;;
     *)         if [ -n "$CORPUS" ]
 	       then
@@ -119,6 +119,13 @@ then
     exit 1
 fi
 
+# Make sure number of factors is reasonable
+if [ $NUMFACTORS -lt 3 ]
+then
+    echo "$ME: can't have less than 3 factors"
+    exit 1
+fi
+
 # Clean up
 if [ -n "$CLEAN" ]
 then
@@ -134,7 +141,7 @@ fi
 
 # Write log file so we remember which options we used
 echo "------------------------------------------------------------------------
-Running "'$Id: summarize,v 0.7 2002-08-31 16:22:16 psy Exp $'"
+Running "'$Id: summarize,v 0.8 2002-08-31 17:49:52 psy Exp $'"
 Command line options: $ORIGOPTS
 Start time: `date`" \
     | tee -a $CORPUS.log
@@ -199,6 +206,12 @@ then
     if [ -z $NUMFACTORS ]
     then
 	NUMFACTORS=$(( NUMLINES * FACTPERCENT / 100 ))
+	if [ $NUMFACTORS -lt 3 ]
+	then
+	    NUMFACTORS=3
+	    echo "Number of factors is too small; setting to 3" \
+		| tee -a $CORPUS.log
+	fi
 	echo "Number of factors: $NUMLINES * $FACTPERCENT% = $NUMFACTORS" \
 	    | tee -a $CORPUS.log
     fi

@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: txt2sentencecorpus,v 0.3 2002-09-05 13:20:43 psy Exp $
+# $Id: txt2sentencecorpus,v 0.4 2002-09-05 14:28:52 psy Exp $
 # ------------------------------------------------------------------------------
 #
 # Usage:
@@ -27,6 +27,9 @@ foreach $line (<>) {
     $line =~ s/Dr\./Dr/g;
     $line =~ s/St\./St/g;
     $line =~ s/Sen\./Sen/g;
+    $line =~ s/Gov\./Gov/g;
+    $line =~ s/Govs\./Govs/g;
+    $line =~ s/Corp\./Corp/g;
     $line =~ s/Sens\./Sens/g;
     $line =~ s/Prof\./Prof/g;
     $line =~ s/i\.?e\./ie/g;

@@ -1,4 +1,25 @@
-$Revision: 0.4 $ $Date: 2002-08-27 14:22:37 $
+$Id: todo.txt,v 0.5 2002-08-31 15:32:35 psy Exp $
+-------------------------------------------------------------------------------
+
+To do for Tuesday, 3 September:
+
+* find sweet spot
+  - get a bunch of corpora, try different # of factors, different
+lengths, make table
+* get more summarizers
+
+MUSICIANS: xxx sentences
+
+% factors (a:b:g)/ % length	5	15	30	50
+----------------------------------------------------------
+5
+10
+15
+20
+25
+30
+50
+
 
 getallglue.ksh can be made vastly more efficient with the following
 reimplementation: 
@@ -42,3 +63,18 @@ To turn on pcl-cvs: M-x load-library RET pcl-cvs RET
 	M-x pcl-cvs RET
 To commit with either:  ^X ^Q, then type message, then ^C ^C
 
+
+
+Recent changes:
+
+- added initial-sentences baseline generator (only works for documents 
+where the summary length is less than or equal to the number of
+paragraphs)
+
+- added a summary paragraphizer
+
+- rewrote (in theory) the gluing algorithm
+
+- updated user interfaces; more options
+
+- added CVS

@@ -1,18 +1,32 @@
-$Revision: 0.1 $ $Date: 2002-08-26 12:03:12 $
-Given an arbitrary document:
+$Revision: 0.2 $ $Date: 2002-08-26 12:51:40 $
 
-1) txt2sentencecorpus.pl to get a single-spaced corpus.single
-2) C99 corpus.single > corpus.c99
-3) doublespace corpus.single > corpus
-4) buildmatrix.sh corpus
-5) gettopicindices.pl corpus.c99
-6) for each consecutive pair x, y of topic indices:
-	representative corpus.double x y >> summary
-7) for each consecutive pair x,y in summary.i:
-	glue x y >> summary
-	sort summary
-   stop when summary length does not increase, or when length > l
-8) getdoc `cat summary`
+getallglue.ksh can be made vastly more efficient with the following
+reimplementation: 
 
+0) input: length l, list of representative sentences, alpha beta gamma
+1) for each pair of representative sentences i, j
+	getallglue(i, j, 0)
+2) num = `wc -l < $corpus.reps`
+3) head -l $corpus.reps > $corpus.sumindex
+4) l -= num
+5) z = 1
+6) while l > 0
+	num = `wc -l $corpus.$z`
+	if num > l
+		sort +1nr $corpus.$z | head -$l | cut -f2
+		exit
+	else
+		cut -f2 $corpus.$z
+		z++
+	fi
+
+
+function getallglue(x, y, z)
+	g = bestglue(i,j)
+	s = sim(i,j)
+	if g exists
+		echo $s $g >> $corpus.summary.$z
+		call getallglue(i, g, z+1)
+		call getallglue(g, j, z+1)
 
 Should probably remove termless documents or coherence assessment won't work

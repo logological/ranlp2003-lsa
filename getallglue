@@ -1,6 +1,6 @@
 #!/u/psy/bin/ksh
 #
-# getallglue.ksh $Revision: 0.2 $ $Date: 2002-08-26 12:03:10 $
+# getallglue.ksh $Revision: 0.3 $ $Date: 2002-08-26 12:34:06 $
 # --------------
 #
 # Gets all glue sentences
@@ -18,7 +18,6 @@
 # Purpose: creates or improves a summary
 
 ME=`basename $0`
-#KSH=/u/psy/bin/ksh
 USAGE="Usage: $ME alpha beta gamma len corpus < corpus.summary"
 
 #
@@ -48,8 +47,6 @@ do
     PID=$((PID + 1))
     TMPFILE="gag$PID"
 done
-
-#echo "Writing to file $TMPFILE"
 
 # Add the first DU to the summary
 echo -1 $TO >> $TMPFILE
@@ -114,14 +111,12 @@ echo Total DUs = $(( $GLUEADDED + $DUCOUNT ))
 
 if [ $GLUEADDED -eq 0 ]
 then
-#    echo "Glueadded = $GLUEADDED"
     sort +1n $TMPFILE \
 	| cut -f2 -d' ' \
 	> $CORPUS.sumindex
     rm $TMPFILE
 elif [ $(( $GLUEADDED + $DUCOUNT )) -ge $LEN ]
 then
-#    echo "Glueadded $GLUEADDED + $DUCOUNT exceeds length $LEN"
     sort +n $TMPFILE \
 	| cut -f2 -d' ' \
 	| head -$LEN \
@@ -129,7 +124,6 @@ then
 	> $CORPUS.sumindex
     rm $TMPFILE
 else
-#    echo "No problem -- getting more glue"
     sort +1n $TMPFILE \
 	| cut -f2 -d' ' \
 	| getallglue.ksh $ALPHA $BETA $GAMMA $LEN $CORPUS

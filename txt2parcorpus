@@ -1,0 +1,22 @@
+#!/usr/bin/perl
+#
+# Usage:
+#    txt2parcorpus.pl
+#
+# This script converts a plain ASCII text file for use with ICE.
+# It collapses all whitespace and inserts a blank line between
+# paragraphs.
+
+$prev = 0;
+
+foreach $line (<>) {
+  chop($line);
+  if ($line !~ /^\s*$/) {
+    print STDOUT $line . " ";
+    $prev = 1;
+  }
+  elsif ($prev == 1) {
+    print STDOUT "\n\n";
+    $prev = 0;
+  }
+}

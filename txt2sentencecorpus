@@ -1,0 +1,53 @@
+#!/usr/bin/perl
+#
+# Usage:
+#    txt2sentencecorpus.pl
+#
+# This script converts a plain ASCII text file for use with ICE.
+# It collapses all whitespace and inserts a newline between
+# sentences.
+#
+# It also does some English-specific processing to make sure that
+# the periods ending "Mr.", "Dr.", "e.g.", etc. are not misconstrued
+# as sentence boundaries.
+
+foreach $line (<>) {
+  chop($line);
+  if ($line !~ /^\s*$/) {
+
+    # Fix abbreviations
+    $line =~ s/Mr\./Mr/g;
+    $line =~ s/Mrs\./Mrs/g;
+    $line =~ s/Ms\./Ms/g;
+    $line =~ s/Dr\./Dr/g;
+    $line =~ s/St\./St/g;
+    $line =~ s/Sen\./Sen/g;
+    $line =~ s/Prof\./Prof/g;
+    $line =~ s/i\.?e\./ie/g;
+    $line =~ s/e\.?g\./eg/g;
+    
+    # Put each sentence on its own line
+
+    # Remove enumeration list numbers
+    $line =~ s/^\d+\.\s+//g;
+    # Break lines after quotations
+    $line =~ s/([\.\!\?][\"\'])\s*([\'\"A-Z])/\1\n\2/g;
+    # Break lines after periods, etc.
+    $line =~ s/([\.\!\?][\s\.\!\?]+)([\'\"A-Z])/\1\n\2/g;
+    $line =~ s/([\.\!\?]\W*)$/\1\n/g;
+    
+    if ($line =~ /\S$/) {
+      $line = $line . " ";
+    }
+
+    # Remove blank lines and spaces
+    $line =~ s/^\s+//;
+    $line =~ s/\n\s+/\n/g;
+    $line =~ s/\n+/\n/g;
+
+#    chop($line);
+
+    print STDOUT $line;
+
+  }
+}

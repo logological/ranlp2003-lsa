@@ -1,0 +1,19 @@
+#!/usr/bin/perl
+#
+# Usage:
+#  gettopicindices.pl
+#
+# This script takes the output of Freddy Choi's C99 and returns
+# a list of DU indices which begin topic boundaries
+
+$i=1;
+foreach $line (<>) {
+  if ($line eq "==========\n")
+    {
+     print STDOUT "$i\n";
+    }
+  else {
+    $i++;
+  }
+}
+

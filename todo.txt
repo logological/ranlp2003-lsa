@@ -1,0 +1,17 @@
+Given an arbitrary document:
+
+1) txt2sentencecorpus.pl to get a single-spaced corpus.single
+2) C99 corpus.single > corpus.c99
+3) doublespace corpus.single > corpus
+4) buildmatrix.sh corpus
+5) gettopicindices.pl corpus.c99
+6) for each consecutive pair x, y of topic indices:
+	representative corpus.double x y >> summary
+7) for each consecutive pair x,y in summary.i:
+	glue x y >> summary
+	sort summary
+   stop when summary length does not increase, or when length > l
+8) getdoc `cat summary`
+
+
+Should probably remove termless documents or coherence assessment won't work

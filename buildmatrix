@@ -1,0 +1,55 @@
+#!/bin/ksh
+
+# buildmatrix.sh
+# --------------
+#
+# Usage:
+#   buildmatrix.sh stoplist numstop minlen maxlen maxline local global numfactors estring corpus
+#
+# This program builds the LSA matrix.
+
+ME=`basename $0`
+USAGE="Usage: $ME stoplist numstop minlen maxlen maxline local global numfactors estring corpus"
+
+#
+#       Process the command line
+#
+if (($# != 10))
+then
+        echo "$USAGE"
+        exit 1
+fi
+
+STOPLIST=$1
+NUMSTOP=$2
+MINLEN=$3
+MAXLEN=$4
+MAXLINE=$5
+LOCAL=$6
+GLOBAL=$7
+NUMFACT=$8
+ESTRING=$9
+shift
+CORPUS=$9
+
+if [ "$GLOBAL" = "none" ]
+then
+    GLOBAL=""
+fi
+
+echo "Building term-document matrix with..."
+pindex \
+    -n $NUMFACT \
+    -l $MINLEN \
+    -m $MAXLEN \
+    -c $STOPLIST \
+    -nc $NUMSTOP \
+    -e $ESTRING \
+    -w $LOCAL $GLOBAL \
+    $CORPUS \
+    > pindex1.out 2>&1
+echo "Performing SVD..."
+pindex -D -P $CORPUS \
+    > pindex2.out 2>&1
+echo "Indexing corpus..."
+indexdoc $CORPUS

@@ -1,0 +1,4 @@
+#! /bin/tcsh -f
+# Undoes double-spacing in a file (assumes even-numbered lines are
+# always blank)
+sed 'n;d' $1

@@ -1,0 +1,32 @@
+#!/bin/ksh
+#
+# Usage:
+#  printsummary.ksh corpus < summary.final
+#
+# Prints summary given a list of DUs
+
+PATH=$PATH:/u/psy/ice
+CORPUS=$1
+FMT=/u/psy/bin/fmt
+read DU
+
+while [ $? -eq 0 ]
+do
+    getdoc $CORPUS $DU >> ps1.$$
+    read DU
+done
+
+singlespace.sh ps1.$$ | $FMT
+#singlespace.sh ps1.$$ | fmt > $CORPUS.summary
+#cat $CORPUS.summary
+
+#tr '\012' ' ' < ps1.$$ > ps2.$$
+
+#echo ' ' >> ps2.$$
+#sed -e 's/   /  /g;' < ps2.$$ \
+#    | fmt \
+#    > $CORPUS.summary
+rm ps1.$$ 
+
+#cat $CORPUS.summary
+

@@ -1,0 +1,48 @@
+#!/u/psy/bin/ksh
+#
+# Usage:
+#  representative.ksh corpus start_DU end_DU
+#
+# Returns the DU between start_DU and end_DU (inclusive) that
+# compares best with all DUs in that range
+
+#CORPUS=$1
+STARTDU=$1
+ENDDU=$2
+
+DU=$STARTDU
+BESTDU=$STARTDU
+BESTDUSYN=0.0
+
+ALLDUS=""
+
+# Generate a list STARTDU .. ENDDU
+while [ $DU -lt $ENDDU ]
+do
+    ALLDUS="$ALLDUS $DU"
+    DU=$(($DU + 1))
+done
+
+DU=$STARTDU
+while [ $DU -lt $ENDDU ]
+do
+    # Find inter-DU similarity between DU and all other DUs:
+    # generate a string d1+d2+...+dn+0.0 and evaluate it
+    SYN=`syn -S -d $DU -S -d $ALLDUS \
+    | cut -f3 -d' ' \
+    | tr '\012' '+'`
+    SYN=`echo $SYN 0.0 | bc`
+
+#	echo "syn = $SYN  best = $BESTDUSYN  du = $DU"
+    # Is this the best one so far?
+    if [ $SYN -gt $BESTDUSYN ]
+    then
+	BESTDUSYN=$SYN
+	BESTDU=$DU
+    fi
+
+    DU=$(($DU + 1))
+done
+
+echo $BESTDU
+#echo "********  best = $BESTDUSYN  du = $BESTDU"

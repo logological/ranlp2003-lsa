@@ -1,0 +1,21 @@
+#!/u/psy/bin/ksh
+
+# Get the most representative sentence from each segment
+#
+# Usage:
+#
+# getallreps.ksh < corpus.rep
+#
+# where corpus.rep is a newline-delimited list of topic boundaries
+
+PATH=$PATH:/u/psy/ice
+
+read FROM
+read TO
+echo 1
+while [ $? -eq 0 ]
+do
+    representative.ksh $FROM $TO
+    FROM=$TO
+    read TO
+done

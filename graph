@@ -1,0 +1,27 @@
+#!/u/psy/ice/ksh
+
+# Usage:
+#  graph.sh corpus
+
+CORPUS=$1
+
+NUMLINES=$((`wc -l < $CORPUS` / 2))
+
+LINE=1
+
+while [ $LINE -lt $NUMLINES ]
+do
+    echo Line $LINE\:
+    SYN=`syn -S -d $LINE -S -d a | cut -f 3 -d' ' | tr '\012' ' '`
+    for S in $SYN
+    do
+	C=1
+	while [ $C -lt $((79 * $S)) ]
+	do
+	    echo -n O >> $LINE.sim
+	    C=$(($C + 1))
+	done
+    echo >> $LINE.sim
+    done
+    LINE=$(($LINE + 1))
+done

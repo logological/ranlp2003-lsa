@@ -1,0 +1,51 @@
+#!/u/psy/bin/ksh
+#
+# Usage:
+#  glue STARTDU ENDDU ALPHA
+#
+# Returns the DU between start_DU and end_DU (inclusive) that
+# compares best with both
+
+STARTDU=$1
+ENDDU=$2
+ALPHA=$3
+GLUE=$(($STARTDU + 1))
+BESTGLUE=$GLUE
+BESTGLUESYN=-1.0
+ME=`basename $0`
+PATH=$PATH:/u/psy/ice
+USAGE="Usage: $ME startdu enddu alpha"
+
+#
+#       Process the command line
+#
+if [ $# -lt 3 ]
+then
+        echo "$USAGE"
+        exit 1
+fi
+
+if [ $STARTDU -eq $(( $ENDDU - 1 )) ]
+then
+    # DUs too close together
+    exit 1
+fi
+
+while [ $GLUE -lt $ENDDU ]
+do
+    SIM1=`simprime.ksh $GLUE $STARTDU $ALPHA`
+    SIM2=`simprime.ksh $GLUE $ENDDU $ALPHA`
+    F=`f.ksh $SIM1 $SIM2`
+    if [ $F -gt $BESTGLUESYN ]
+    then
+	BESTGLUE=$GLUE
+	BESTGLUESYN=$F
+    fi
+
+#echo $GLUE $SIM1 $SIM2 $F $ALPHA
+    GLUE=$(($GLUE + 1))
+done
+
+echo $BESTGLUE
+#echo $BESTGLUE $BESTGLUESYN
+#echo "********  best = $BESTDUSYN  du = $BESTDU"

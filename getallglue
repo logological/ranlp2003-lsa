@@ -1,0 +1,135 @@
+#!/u/psy/bin/ksh
+
+# Gets all glue sentences
+#
+# Usage:
+#
+# getallglue.ksh alpha beta gamma len corpus < corpus.summary
+# where
+#   alpha = glue too similar cutoff (should be [0..1], near 1)
+#   beta  = adjacent DUs too similar cutoff (should be [0..1], near 1)
+#   gamma = glue not similar enough cutoff ([0..1], near 0)
+#   len   = maximum summary length
+#   corpus= name of corpus
+#
+# Purpose: creates or improves a summary
+
+ME=`basename $0`
+PATH=$PATH:/u/psy/ice
+#KSH=/u/psy/bin/ksh
+USAGE="Usage: $ME alpha beta gamma len corpus < corpus.summary"
+
+#
+#       Process the command line
+#
+if [ $# -lt 5 ]
+then
+        echo "$USAGE"
+        exit 1
+fi
+
+ALPHA=$1
+BETA=$2
+GAMMA=$3
+LEN=$4
+CORPUS=$5
+GLUEADDED=0
+DUCOUNT=1
+
+read TO
+
+PID=$$
+TMPFILE="gag$PID"
+
+while [ -e $TMPFILE ]
+do
+    PID=$((PID + 1))
+    TMPFILE="gag$PID"
+done
+
+#echo "Writing to file $TMPFILE"
+
+# Add the first DU to the summary
+echo -1 $TO >> $TMPFILE
+
+while [ 0 -eq 0 ]
+do
+    FROM=$TO
+    read TO
+
+    if [ $? -ne 0 ]
+    then
+	break
+    fi
+
+    DUCOUNT=$(( $DUCOUNT + 1))
+
+    # Add the next DU to the summary
+    echo -1 $TO >> $TMPFILE
+
+    #DEBUG
+    echo Gluing $FROM to $TO...
+
+    # Check if DUs are too close together
+    if [ $FROM -eq $(( $TO - 1 )) ]
+    then
+	continue
+    fi
+
+    # Check to make sure DUs aren't already too similar
+    SIM=`syn -S -d $FROM -S -d $TO \
+	| cut -f3 -d' '`
+    if [ $SIM -gt $BETA ]
+    then
+	#DEBUG
+	echo Too similar \($SIM\); skipping
+	continue
+    fi
+
+    # Get best glue
+    GLUE=`glue.ksh $FROM $TO $ALPHA`
+
+    #DEBUG
+    echo Best glue is $GLUE
+
+    # Is glue good enough?
+    SIM1=`simprime.ksh $GLUE $FROM $ALPHA`
+    SIM2=`simprime.ksh $GLUE $TO $ALPHA`
+    F=`f.ksh $SIM1 $SIM2`
+    if [ $F -ge $GAMMA ]
+    then
+	#DEBUG
+	echo Glue is acceptable \($F\)\; adding to summary
+	echo $SIM $GLUE >> $TMPFILE
+	GLUEADDED=$(( $GLUEADDED + 1))
+    fi
+
+done
+
+#DEBUG
+echo Done main loop\; total glue added = $GLUEADDED
+echo Total DUs = $(( $GLUEADDED + $DUCOUNT ))
+
+if [ $GLUEADDED -eq 0 ]
+then
+#    echo "Glueadded = $GLUEADDED"
+    sort +1n $TMPFILE \
+	| cut -f2 -d' ' \
+	> $CORPUS.sumindex
+    rm $TMPFILE
+elif [ $(( $GLUEADDED + $DUCOUNT )) -ge $LEN ]
+then
+#    echo "Glueadded $GLUEADDED + $DUCOUNT exceeds length $LEN"
+    sort +n $TMPFILE \
+	| cut -f2 -d' ' \
+	| head -$LEN \
+	| sort +n \
+	> $CORPUS.sumindex
+    rm $TMPFILE
+else
+#    echo "No problem -- getting more glue"
+    sort +1n $TMPFILE \
+	| cut -f2 -d' ' \
+	| getallglue.ksh $ALPHA $BETA $GAMMA $LEN $CORPUS
+    rm $TMPFILE
+fi

@@ -1,0 +1,231 @@
+#!/u/psy/bin/ksh
+
+# Summarizes a document (the whole shebang)
+
+BIN=/u/psy/ice
+C99DIR=/ai/nlu/C99/bin
+PATH=$BIN:$PATH
+CWD=`pwd`
+
+# Default options
+MINLEN=1
+MAXLEN=30
+MAXLINE=10000
+ESTRING=\'-
+#STOPLIST=$BIN/stoplist
+STOPLIST=/dev/null
+LOCAL=log
+GLOBAL=entropy
+FACTPERCENT=30
+ALPHA=0.90
+BETA=1.00
+GAMMA=0.10
+SUMPERCENT=15
+
+# Usage instructions
+ME=`basename $0`
+USAGE="Usage: $ME [options] corpus
+
+Default values are given in square brackets.
+
+General options:
+    -clean     remove all existing summary and intermediate files [off]
+
+Text processing options:
+    -m n       minimum word length [$MINLEN]
+    -t n       word truncation length [$MAXLEN]
+    -T n       line truncation length [$MAXLINE]
+    -N         include numbers as words [off]
+    -e string  extra characters to be considered as part of a word [$ESTRING]
+    -s file    stop words file [$STOPLIST]
+    -nc n      number of stop words to use [length of stoplist]
+
+LSA options:
+    -lw w      local weight (log, tf, binary) [$LOCAL]
+    -gw w      global weight (normal, idf, idf2, entropy, none) [$GLOBAL]
+    -f n       number of factors (as % of  original document) [$FACTPERCENT]
+    -F n       number of factors (absolute) [off]
+
+Summarization options:
+    -a n       glue too similar cutoff ([0..1], near 1) [$ALPHA]
+    -b n       adjacent DUs too similar cutoff ([0..1], near 1) [$BETA]
+    -g n       glue too dissimilar cutoff ([0..1], near 0) [$GAMMA]
+    -l n       summary length (as % of original document) [$SUMPERCENT]
+    -L n       summary length (absolute) [off]
+"
+
+
+#
+#       Process the command line
+#
+if [ $# -lt 1 ]
+then
+        echo "$USAGE"
+        exit 1
+fi
+
+while [ $# -gt 0 ]
+do
+    case $1 in
+    -clean)    CLEAN=1                  ;;
+    -m)        MINLEN="$2";             shift;;
+    -t)        MAXLEN="$2";             shift;;
+    -T)        MAXLINE="$2";            shift;;
+    -N)        echo "$ME: -N is not implemented yet"; exit 1  ;;
+#    -N)        NUMFLAG="-N"             ;;
+    -e)        ESTRING="$2";            shift;;
+    -s)        STOPLIST="$2";           shift;;
+    -nc)       NUMSTOP="$2";            shift;;
+    -lw)       LOCAL="$2";              shift;;
+    -gw)       GLOBAL="$2";             shift;;
+    -f)        FACTPERCENT="$2"         shift;;
+    -F)        NUMFACTORS="$2"          shift;;
+    -a)        ALPHA="$2"               shift;;
+    -b)        BETA="$2"                shift;;
+    -g)        GAMMA="$2"               shift;;
+    -l)        SUMPERCENT="$2"          shift;;
+    -L)        SUMLEN="$2"              shift;;
+    -\?)       echo "$USAGE"; exit 0    ;;
+    --\?)      echo "$USAGE"; exit 0    ;;
+    -help)     echo "$USAGE"; exit 0    ;;
+    --help)    echo "$USAGE"; exit 0    ;;
+    -*)        echo "$ME: invalid argument \"$1\""; exit 1 ;;
+    *)         if [ -n "$CORPUS" ]
+	       then
+		    echo "$USAGE"
+		    exit 1
+	       fi
+	       CORPUS=$1 ;;
+    esac
+    shift
+done
+
+# Clean up
+if [ -n $CLEAN ]
+then
+    rm -f $CORPUS $CORPUS.c99 $CORPUS.i $CORPUS.reps $CORPUS.topics $CORPUS.sumindex $CORPUS.single $CORPUS.summary $CORPUS.summary.random $CORPUS.tmp RUN_SUMMARY keys.dir keys.pag out pindex1.out pindex2.out $CORPUS.summary.baseline
+fi
+
+# Make sure file is there
+if [ ! -e $CORPUS.txt ]
+then
+    echo "$ME: $CORPUS.txt not found"
+    exit 1
+fi
+
+# Make stoplist is there
+if [ ! -e $STOPLIST ]
+then
+    echo "$ME: $STOPLIST not found"
+    exit 1
+fi
+
+# Write log file so we remember which options we used
+echo "------------------------------------------------------------------------
+Running $ME --- `date`
+Options:
+-m $MINLEN
+-t $MAXLEN
+-T $MAXLINE
+-e $ESTRING
+-s $STOPLIST
+-nc $NUMSTOP
+-lw $LOCAL
+-gw $GLOBAL
+-f $FACTPERCENT
+-F $NUMFACTORS
+-a $ALPHA
+-b $BETA
+-g $GAMMA
+-l $SUMPERCENT
+-L $SUMLEN
+" >> $CORPUS.log
+
+# Segment corpus into sentences (one per line)
+if [ ! -e $CORPUS.single ]
+then
+    echo "Segmenting corpus into sentences..."
+    txt2sentencecorpus.pl $CORPUS.txt > $CORPUS.single
+fi
+
+# Use C99 to segment the corpus
+if [ ! -e $CORPUS.c99 ]
+then
+    echo "Segmenting corpus into topics..."
+    cd $C99DIR
+    ./C99 < $CWD/$CORPUS.single > $CWD/$CORPUS.c99
+    cd $CWD
+fi
+
+NUMLINES=`grep -c \$ $CORPUS.single`
+echo "Number of DUs: $NUMLINES" >> $CORPUS.log
+
+# double-space the corpus
+if [ ! -e $CORPUS ]
+then
+    echo "Double-spacing corpus for use with LSA..."
+    doublespace.sh $CORPUS.single \
+	| head  -$((NUMLINES * 2 - 1)) \
+	> $CORPUS
+fi
+
+# Extract the topic indices from the C99 output
+if [ ! -e $CORPUS.topics ]
+then
+    echo "Extracting topic indices..."
+    gettopicindices.pl $CORPUS.c99 > $CORPUS.topics
+fi
+
+# Build LSA matrix
+if [ ! -e out ]
+then
+    # Determine the number of factors
+    if [ -z $NUMFACTORS ]
+    then
+	NUMFACTORS=$(( NUMLINES * FACTPERCENT / 100 ))
+	echo "Number of factors: $NUMLINES * $FACTPERCENT\% = $NUMFACTORS" \
+	    >> $CORPUS.log
+    fi
+    NUMSTOP=`wc -l < $STOPLIST`
+    buildmatrix.sh $STOPLIST $NUMSTOP $MINLEN $MAXLEN $MAXLINE $LOCAL $GLOBAL $NUMFACTORS $ESTRING $CORPUS
+fi
+
+# Get a representative sentence from each segment
+if [ ! -e $CORPUS.reps ]
+then
+    echo "Getting topic representatives..."
+    getallreps.ksh < $CORPUS.topics | uniq > $CORPUS.reps
+fi
+
+# Get all the glue and make the summary
+if [ ! -e $CORPUS.sumindex ]
+then
+    # Determine the number of factors
+    if [ -z $SUMLEN ]
+    then
+	SUMLEN=$(( NUMLINES * SUMPERCENT / 100 ))
+	echo "Summary length: $NUMLINES * $SUMPERCENT\% = $SUMLEN" \
+	    >> $CORPUS.log
+    fi
+    echo "Making glue..."
+    getallglue.ksh $ALPHA $BETA $GAMMA $SUMLEN $CORPUS < $CORPUS.reps
+fi
+
+# Print the summary
+if [ ! -e $CORPUS.summary ]
+then
+    echo "Printing the text summary..."
+    printsummary.ksh $CORPUS < $CORPUS.sumindex > $CORPUS.summary
+fi
+
+# Print the random baseline
+if [ ! -e $CORPUS.summary.random ]
+then
+    echo "Generating the random baseline..."
+    getrand $SUMLEN 1 $NUMLINES \
+	| sort +n \
+	| printsummary.ksh $CORPUS \
+	> $CORPUS.summary.baseline
+fi
+
+

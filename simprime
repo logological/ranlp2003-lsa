@@ -1,0 +1,21 @@
+#!/u/psy/bin/ksh
+#
+# sim'(x, y) = { 0         if sim(x,y) >= alpha;
+#              { sim(x,y)  otherwise
+# for DU indices x and y, and 0 <= alpha <= 1.
+#
+# Usage:
+#  simprime x y alpha
+
+X=$1
+Y=$2
+ALPHA=$3
+
+SIM=`syn -S -d $X -S -d $Y \
+    | cut -f3 -d' '`
+
+if [ $(( $SIM >= $ALPHA )) -ne 0 ]
+then
+    SIM=0.000000
+fi
+echo $SIM

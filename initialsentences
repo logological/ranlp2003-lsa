@@ -1,0 +1,43 @@
+#!/usr/bin/perl
+#
+# $Id: initialsentences,v 0.1 2002-08-27 19:27:43 psy Exp $
+# -----------------------------------------------------------------------------
+#
+# Usage:
+#    initialsentences.pl
+#
+# This script prints out the initial sentences of every paragraph in the
+# input.  It assumes the input has zero or one paragraphs per line.
+
+foreach $line (<>) {
+
+    # Fix abbreviations
+    $line =~ s/Mr\./Mr/g;
+    $line =~ s/Mrs\./Mrs/g;
+    $line =~ s/Ms\./Ms/g;
+    $line =~ s/Dr\./Dr/g;
+    $line =~ s/St\./St/g;
+    $line =~ s/Sen\./Sen/g;
+    $line =~ s/Prof\./Prof/g;
+    $line =~ s/i\.?e\./ie/g;
+    $line =~ s/e\.?g\./eg/g;
+    
+    # Put each sentence on its own line
+
+    # Remove enumeration list numbers
+    $line =~ s/^\d+\.\s+//;
+
+    # Don't count middle initials as end-of-sentence periods
+    $line =~ s/(\s[A-Z])\.(\s[A-Z])/\1\2/g;
+
+    # Delete everything after the first sentence
+    $line =~ s/([^\.\!\?]+[\.\!\?\"\'\s]+).*/\1/;
+
+    # Remove blank lines and spaces
+    $line =~ s/^\s+//;
+
+    if ( $line =~ /[\.\!\?]/) {
+      print STDOUT $line;
+    }
+
+}

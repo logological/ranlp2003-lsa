@@ -1,10 +1,10 @@
 #!/usr/bin/perl
 #
-# $Id: initialsentences,v 0.3 2002-08-27 19:41:21 psy Exp $
+# $Id: initialsentences,v 0.4 2002-08-31 16:22:16 psy Exp $
 # -----------------------------------------------------------------------------
 #
 # Usage:
-#    initialsentences.pl
+#    initialsentences
 #
 # This script prints out the initial sentences of every paragraph in the
 # input.  It assumes the input has zero or one paragraphs per line.

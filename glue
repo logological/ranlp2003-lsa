@@ -1,7 +1,7 @@
 #!/u/psy/bin/ksh
 #
-# glue.ksh $Revision: 0.2 $ $Date: 2002-08-26 12:03:11 $
-# --------
+# $Id: glue,v 0.3 2002-08-31 16:22:15 psy Exp $
+# ------------------------------------------------------------------------------
 #
 # Usage:
 #  glue STARTDU ENDDU ALPHA
@@ -35,9 +35,9 @@ fi
 
 while [ $GLUE -lt $ENDDU ]
 do
-    SIM1=`simprime.ksh $GLUE $STARTDU $ALPHA`
-    SIM2=`simprime.ksh $GLUE $ENDDU $ALPHA`
-    F=`f.ksh $SIM1 $SIM2`
+    SIM1=`simprime $GLUE $STARTDU $ALPHA`
+    SIM2=`simprime $GLUE $ENDDU $ALPHA`
+    F=`f $SIM1 $SIM2`
     if [ $F -gt $BESTGLUESYN ]
     then
 	BESTGLUE=$GLUE

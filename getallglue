@@ -1,13 +1,13 @@
 #!/u/psy/bin/ksh
 #
-# getallglue.ksh $Revision: 0.3 $ $Date: 2002-08-26 12:34:06 $
-# --------------
+# $Id: getallglue,v 0.4 2002-08-31 16:22:15 psy Exp $
+# ------------------------------------------------------------------------------
 #
 # Gets all glue sentences
 #
 # Usage:
 #
-# getallglue.ksh alpha beta gamma len corpus < corpus.summary
+# getallglue alpha beta gamma len corpus < corpus.summary
 # where
 #   alpha = glue too similar cutoff (should be [0..1], near 1)
 #   beta  = adjacent DUs too similar cutoff (should be [0..1], near 1)
@@ -86,15 +86,15 @@ do
     fi
 
     # Get best glue
-    GLUE=`glue.ksh $FROM $TO $ALPHA`
+    GLUE=`glue $FROM $TO $ALPHA`
 
     #DEBUG
     echo Best glue is $GLUE
 
     # Is glue good enough?
-    SIM1=`simprime.ksh $GLUE $FROM $ALPHA`
-    SIM2=`simprime.ksh $GLUE $TO $ALPHA`
-    F=`f.ksh $SIM1 $SIM2`
+    SIM1=`simprime $GLUE $FROM $ALPHA`
+    SIM2=`simprime $GLUE $TO $ALPHA`
+    F=`f $SIM1 $SIM2`
     if [ $F -ge $GAMMA ]
     then
 	#DEBUG
@@ -126,6 +126,6 @@ then
 else
     sort +1n $TMPFILE \
 	| cut -f2 -d' ' \
-	| getallglue.ksh $ALPHA $BETA $GAMMA $LEN $CORPUS
+	| getallglue $ALPHA $BETA $GAMMA $LEN $CORPUS
     rm $TMPFILE
 fi

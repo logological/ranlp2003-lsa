@@ -1,10 +1,10 @@
 #!/usr/bin/perl
 #
-# gettopicindices.pl $Revision: 0.1 $ $Date: 2002-08-26 12:03:11 $
-# ------------------
+# $Id: gettopicindices,v 0.2 2002-08-31 16:22:15 psy Exp $
+# ------------------------------------------------------------------------------
 #
 # Usage:
-#  gettopicindices.pl
+#  gettopicindices
 #
 # This script takes the output of Freddy Choi's C99 and returns
 # a list of DU indices which begin topic boundaries

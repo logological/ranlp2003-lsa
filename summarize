@@ -1,7 +1,7 @@
 #!/u/psy/bin/ksh
 #
-# summarize.ksh $Revision: 0.6 $ $Date: 2002-08-27 16:21:23 $
-# -------------
+# $Id: summarize,v 0.7 2002-08-31 16:22:16 psy Exp $
+# ------------------------------------------------------------------------------
 #
 # Summarizes a document (the whole shebang)
 
@@ -92,8 +92,8 @@ do
     --\?)      echo "$USAGE"; exit 0    ;;
     -help)     echo "$USAGE"; exit 0    ;;
     --help)    echo "$USAGE"; exit 0    ;;
-    -version)  echo '$Id: summarize,v 0.6 2002-08-27 16:21:23 psy Exp $'; exit 0    ;;
-    --version) echo '$Id: summarize,v 0.6 2002-08-27 16:21:23 psy Exp $'; exit 0    ;;
+    -version)  echo '$Id: summarize,v 0.7 2002-08-31 16:22:16 psy Exp $'; exit 0    ;;
+    --version) echo '$Id: summarize,v 0.7 2002-08-31 16:22:16 psy Exp $'; exit 0    ;;
     -*)        echo "$ME: invalid argument \"$1\""; exit 1 ;;
     *)         if [ -n "$CORPUS" ]
 	       then
@@ -134,7 +134,7 @@ fi
 
 # Write log file so we remember which options we used
 echo "------------------------------------------------------------------------
-Running "'$Id: summarize,v 0.6 2002-08-27 16:21:23 psy Exp $'"
+Running "'$Id: summarize,v 0.7 2002-08-31 16:22:16 psy Exp $'"
 Command line options: $ORIGOPTS
 Start time: `date`" \
     | tee -a $CORPUS.log
@@ -160,7 +160,7 @@ Start time: `date`" \
 if [ ! -e $CORPUS.single ]
 then
     echo "Segmenting corpus into sentences..."
-    txt2sentencecorpus.pl $CORPUS.txt > $CORPUS.single
+    txt2sentencecorpus $CORPUS.txt > $CORPUS.single
 fi
 
 # Use C99 to segment the corpus
@@ -180,7 +180,7 @@ echo "Number of DUs: $NUMLINES" \
 if [ ! -e $CORPUS ]
 then
     echo "Double-spacing corpus for use with LSA..."
-    doublespace.sh $CORPUS.single \
+    doublespace $CORPUS.single \
 	| head  -$((NUMLINES * 2 - 1)) \
 	> $CORPUS
 fi
@@ -189,7 +189,7 @@ fi
 if [ ! -e $CORPUS.topics ]
 then
     echo "Extracting topic indices..."
-    gettopicindices.pl $CORPUS.c99 > $CORPUS.topics
+    gettopicindices $CORPUS.c99 > $CORPUS.topics
 fi
 
 # Build LSA matrix
@@ -203,14 +203,14 @@ then
 	    | tee -a $CORPUS.log
     fi
     NUMSTOP=`wc -l < $STOPLIST`
-    buildmatrix.sh $STOPLIST $NUMSTOP $MINLEN $MAXLEN $MAXLINE $LOCAL $GLOBAL $NUMFACTORS $ESTRING $CORPUS
+    buildmatrix $STOPLIST $NUMSTOP $MINLEN $MAXLEN $MAXLINE $LOCAL $GLOBAL $NUMFACTORS $ESTRING $CORPUS
 fi
 
 # Get a representative sentence from each segment
 if [ ! -e $CORPUS.reps ]
 then
     echo "Getting topic representatives..."
-    getallreps.ksh < $CORPUS.topics | uniq > $CORPUS.reps
+    getallreps < $CORPUS.topics | uniq > $CORPUS.reps
 fi
 
 # Get all the glue and make the summary
@@ -224,7 +224,7 @@ then
 	    | tee -a $CORPUS.log
     fi
     echo "Making glue..."
-    getallglue.ksh $ALPHA $BETA $GAMMA $SUMLEN $CORPUS < $CORPUS.reps
+    getallglue $ALPHA $BETA $GAMMA $SUMLEN $CORPUS < $CORPUS.reps
     echo "Actual summary length: `wc -l < $CORPUS.sumindex`" \
 	    | tee -a $CORPUS.log
 fi
@@ -233,7 +233,7 @@ fi
 if [ ! -e $CORPUS.summary ]
 then
     echo "Printing the text summary..."
-    printsummary.ksh $CORPUS < $CORPUS.sumindex > $CORPUS.summary
+    printsummary $CORPUS < $CORPUS.sumindex > $CORPUS.summary
 fi
 
 # Print the random baseline
@@ -242,7 +242,7 @@ then
     echo "Generating the random baseline..."
     getrand $SUMLEN 1 $NUMLINES \
 	| sort +n \
-	| printsummary.ksh $CORPUS \
+	| printsummary $CORPUS \
 	> $CORPUS.summary.baseline
 fi
 

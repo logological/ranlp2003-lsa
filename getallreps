@@ -1,13 +1,13 @@
 #!/u/psy/bin/ksh
 #
-# getallreps.ksh $Revision: 0.2 $ $Date: 2002-08-26 12:03:11 $
-# --------------
+# $Id: getallreps,v 0.3 2002-08-31 16:22:15 psy Exp $
+# ------------------------------------------------------------------------------
 #
 # Get the most representative sentence from each segment
 #
 # Usage:
 #
-# getallreps.ksh < corpus.rep
+# getallreps < corpus.rep
 #
 # where corpus.rep is a newline-delimited list of topic boundaries
 
@@ -16,7 +16,7 @@ read TO
 echo 1
 while [ $? -eq 0 ]
 do
-    representative.ksh $FROM $TO
+    representative $FROM $TO
     FROM=$TO
     read TO
 done

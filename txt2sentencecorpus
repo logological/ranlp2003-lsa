@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: txt2sentencecorpus,v 0.2 2002-08-31 16:22:16 psy Exp $
+# $Id: txt2sentencecorpus,v 0.3 2002-09-05 13:20:43 psy Exp $
 # ------------------------------------------------------------------------------
 #
 # Usage:
@@ -19,12 +19,15 @@ foreach $line (<>) {
   if ($line !~ /^\s*$/) {
 
     # Fix abbreviations
+    $line =~ s/Mt\./Mt/g;
     $line =~ s/Mr\./Mr/g;
     $line =~ s/Mrs\./Mrs/g;
+    $line =~ s/Messrs\./Messrs/g;
     $line =~ s/Ms\./Ms/g;
     $line =~ s/Dr\./Dr/g;
     $line =~ s/St\./St/g;
     $line =~ s/Sen\./Sen/g;
+    $line =~ s/Sens\./Sens/g;
     $line =~ s/Prof\./Prof/g;
     $line =~ s/i\.?e\./ie/g;
     $line =~ s/e\.?g\./eg/g;
@@ -34,9 +37,9 @@ foreach $line (<>) {
     # Remove enumeration list numbers
     $line =~ s/^\d+\.\s+//g;
     # Break lines after quotations
-    $line =~ s/([\.\!\?][\"\'])\s*([\'\"A-Z])/\1\n\2/g;
+    $line =~ s/([\.\!\?][\"\'])\s*([\`\'\"A-Z])/\1\n\2/g;
     # Break lines after periods, etc.
-    $line =~ s/([\.\!\?][\s\.\!\?]+)([\'\"A-Z])/\1\n\2/g;
+    $line =~ s/([\.\!\?][\s\.\!\?]+)([\`\'\"A-Z])/\1\n\2/g;
     $line =~ s/([\.\!\?]\W*)$/\1\n/g;
     
     if ($line =~ /\S$/) {

@@ -1,6 +1,6 @@
 #!/u/psy/bin/ksh
 #
-# $Id: summarize,v 0.12 2002-09-05 23:41:21 psy Exp $
+# $Id: summarize,v 0.13 2002-09-05 23:45:32 psy Exp $
 # ------------------------------------------------------------------------------
 #
 # Summarizes a document (the whole shebang)
@@ -94,8 +94,8 @@ do
     --\?)      echo "$USAGE"; exit 0    ;;
     -help)     echo "$USAGE"; exit 0    ;;
     --help)    echo "$USAGE"; exit 0    ;;
-    -version)  echo '$Id: summarize,v 0.12 2002-09-05 23:41:21 psy Exp $'; exit 0    ;;
-    --version) echo '$Id: summarize,v 0.12 2002-09-05 23:41:21 psy Exp $'; exit 0    ;;
+    -version)  echo '$Id: summarize,v 0.13 2002-09-05 23:45:32 psy Exp $'; exit 0    ;;
+    --version) echo '$Id: summarize,v 0.13 2002-09-05 23:45:32 psy Exp $'; exit 0    ;;
     -*)        echo "$ME: invalid argument \"$1\""; exit 1 ;;
     *)         if [ -n "$CORPUS" ]
 	       then
@@ -146,7 +146,7 @@ fi
 
 # Write log file so we remember which options we used
 echo "------------------------------------------------------------------------
-Running "'$Id: summarize,v 0.12 2002-09-05 23:41:21 psy Exp $'"
+Running "'$Id: summarize,v 0.13 2002-09-05 23:45:32 psy Exp $'"
 Command line options: $ORIGOPTS
 Start time: `date`" \
     | tee -a $CORPUS.log
@@ -262,7 +262,7 @@ then
     getrand $SUMLEN 1 $NUMLINES \
 	| sort +n \
 	| printsummary $CORPUS \
-	> $CORPUS.summary.baseline
+	> $CORPUS.summary.random
 fi
 
 # Print the initial-sentences baseline

@@ -1,5 +1,8 @@
 #!/u/psy/bin/ksh
-
+#
+# getallglue.ksh $Revision: 0.2 $ $Date: 2002-08-26 12:03:10 $
+# --------------
+#
 # Gets all glue sentences
 #
 # Usage:

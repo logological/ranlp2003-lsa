@@ -1,5 +1,8 @@
 #!/usr/bin/perl
 #
+# txt2sentencecorpus.pl $Revision: 0.1 $ $Date: 2002-08-26 12:03:12 $
+# ---------------------
+#
 # Usage:
 #    txt2sentencecorpus.pl
 #

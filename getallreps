@@ -1,5 +1,8 @@
 #!/u/psy/bin/ksh
-
+#
+# getallreps.ksh $Revision: 0.2 $ $Date: 2002-08-26 12:03:11 $
+# --------------
+#
 # Get the most representative sentence from each segment
 #
 # Usage:

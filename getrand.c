@@ -1,5 +1,5 @@
 /*-----------------------------------------------------------------------------
-Filename: getrand.c
+Filename: getrand.c $Revision: 0.1 $ $Date: 2002-08-26 12:03:11 $
 Purpose : Prints out random numbers, without replacement
 Usage   : getrand num min max
 -----------------------------------------------------------------------------*/

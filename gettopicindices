@@ -1,5 +1,8 @@
 #!/usr/bin/perl
 #
+# gettopicindices.pl $Revision: 0.1 $ $Date: 2002-08-26 12:03:11 $
+# ------------------
+#
 # Usage:
 #  gettopicindices.pl
 #

@@ -1,6 +1,9 @@
 #!/u/psy/bin/ksh
 #
-# f(x, y) = x*y*(1-|x-y|)
+# f.ksh $Revision: 0.1 $ $Date: 2002-08-26 12:03:10 $
+# -----
+#
+# returns f(x, y) = x*y*(1-|x-y|)
 #
 # Usage:
 #  f.ksh x y

@@ -1,5 +1,8 @@
 #!/u/psy/bin/ksh
-
+#
+# summarize.ksh $Revision: 0.2 $ $Date: 2002-08-26 12:03:12 $
+# -------------
+#
 # Summarizes a document (the whole shebang)
 
 C99DIR=/ai/nlu/C99/bin

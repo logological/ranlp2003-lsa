@@ -1,5 +1,8 @@
 #!/u/psy/bin/ksh
 #
+# simprime.ksh $Revision: 0.1 $ $Date: 2002-08-26 12:03:11 $
+# ------------
+#
 # sim'(x, y) = { 0         if sim(x,y) >= alpha;
 #              { sim(x,y)  otherwise
 # for DU indices x and y, and 0 <= alpha <= 1.

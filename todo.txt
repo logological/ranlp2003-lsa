@@ -1,3 +1,4 @@
+$Revision: 0.1 $ $Date: 2002-08-26 12:03:12 $
 Given an arbitrary document:
 
 1) txt2sentencecorpus.pl to get a single-spaced corpus.single

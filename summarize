@@ -1,6 +1,6 @@
 #!/u/psy/bin/ksh
 #
-# $Id: summarize,v 0.9 2002-08-31 18:02:11 psy Exp $
+# $Id: summarize,v 0.10 2002-09-05 13:24:36 psy Exp $
 # ------------------------------------------------------------------------------
 #
 # Summarizes a document (the whole shebang)
@@ -8,6 +8,7 @@
 C99DIR=/ai/nlu/C99/bin
 CWD=`pwd`
 ORIGOPTS="$@"
+MINFACTORS=4
 
 # Default options
 MINLEN=1
@@ -92,8 +93,8 @@ do
     --\?)      echo "$USAGE"; exit 0    ;;
     -help)     echo "$USAGE"; exit 0    ;;
     --help)    echo "$USAGE"; exit 0    ;;
-    -version)  echo '$Id: summarize,v 0.9 2002-08-31 18:02:11 psy Exp $'; exit 0    ;;
-    --version) echo '$Id: summarize,v 0.9 2002-08-31 18:02:11 psy Exp $'; exit 0    ;;
+    -version)  echo '$Id: summarize,v 0.10 2002-09-05 13:24:36 psy Exp $'; exit 0    ;;
+    --version) echo '$Id: summarize,v 0.10 2002-09-05 13:24:36 psy Exp $'; exit 0    ;;
     -*)        echo "$ME: invalid argument \"$1\""; exit 1 ;;
     *)         if [ -n "$CORPUS" ]
 	       then
@@ -122,9 +123,9 @@ fi
 # Make sure number of factors is reasonable
 if [ -n "$NUMFACTORS" ]
 then
-    if [ $NUMFACTORS -lt 3 ]
+    if [ $NUMFACTORS -lt $MINFACTORS ]
     then
-	echo "$ME: can't have less than 3 factors"
+	echo "$ME: can't have less than $MINFACTORS factors"
 	exit 1
     fi
 fi
@@ -144,7 +145,7 @@ fi
 
 # Write log file so we remember which options we used
 echo "------------------------------------------------------------------------
-Running "'$Id: summarize,v 0.9 2002-08-31 18:02:11 psy Exp $'"
+Running "'$Id: summarize,v 0.10 2002-09-05 13:24:36 psy Exp $'"
 Command line options: $ORIGOPTS
 Start time: `date`" \
     | tee -a $CORPUS.log
@@ -209,10 +210,10 @@ then
     if [ -z $NUMFACTORS ]
     then
 	NUMFACTORS=$(( NUMLINES * FACTPERCENT / 100 ))
-	if [ $NUMFACTORS -lt 3 ]
+	if [ $NUMFACTORS -lt $MINFACTORS ]
 	then
-	    NUMFACTORS=3
-	    echo "Number of factors is too small; setting to 3" \
+	    NUMFACTORS=$MINFACTORS
+	    echo "Number of factors is too small; setting to $MINFACTORS" \
 		| tee -a $CORPUS.log
 	fi
 	echo "Number of factors: $NUMLINES * $FACTPERCENT% = $NUMFACTORS" \
@@ -249,7 +250,8 @@ fi
 if [ ! -e $CORPUS.summary ]
 then
     echo "Printing the text summary..."
-    printsummary $CORPUS < $CORPUS.sumindex > $CORPUS.summary
+    printsummary $CORPUS < $CORPUS.sumindex > $CORPUS.summary.unformatted
+    reparagraph $CORPUS $CORPUS.sumindex > $CORPUS.summary
 fi
 
 # Print the random baseline

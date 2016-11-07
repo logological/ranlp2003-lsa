@@ -8,6 +8,7 @@ summarization system for producing coherent abstracts.
 * [ksh93](http://www.kornshell.org/)
 * [tcsh](http://www.tcsh.org/)
 * [Telcordia Latent Semantic Indexing (LSI)](https://web.archive.org/web/20030202005935/http://lsi.research.telcordia.com/)
+* C99 text segmenter
 
 ## Citation
 

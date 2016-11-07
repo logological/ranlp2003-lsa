@@ -7,7 +7,7 @@
 
 C99DIR=/ai/nlu/C99/bin
 CWD=`pwd`
-FMT=/u/psy/bin/fmt
+FMT=fmt
 
 # Usage instructions
 ME=`basename $0`

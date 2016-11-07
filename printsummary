@@ -8,7 +8,7 @@
 #
 # Prints summary given a list of DUs
 
-FMT=/u/psy/bin/fmt
+FMT=fmt
 
 # Usage instructions
 ME=`basename $0`

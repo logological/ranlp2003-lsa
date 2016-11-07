@@ -5,11 +5,11 @@
 #
 # Summarizes a document (the whole shebang)
 
-C99DIR=/ai/nlu/C99/bin
+C99DIR=/path/to/C99/bin
 CWD=`pwd`
 ORIGOPTS="$@"
 MINFACTORS=4
-FMT=/u/psy/bin/fmt
+FMT=fmt
 
 # Default options
 MINLEN=1
